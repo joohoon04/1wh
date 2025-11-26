@@ -1,0 +1,351 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --accent-color: #FC4F00; 
+    --main-text: #111; 
+    --sub-text: #666;
+    --background-light: #F0F0F0; 
+    --background-dark: #222;
+    --border-color: #E0E0E0; 
+    --radius-small: 8px; 
+    --font-primary: 'Noto Sans KR', sans-serif; /* 산세리프 폰트 */
+}
+
+body {
+    font-family: var(--font-primary);
+    line-height: 1.5;
+    background-color: var(--background-light); 
+    color: var(--main-text);
+}
+
+/* --- 상단 메인 문구 폰트 강제 적용 --- */
+header {
+    background: white; 
+    padding: 40px 0; 
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05); 
+}
+
+/* --- 상단 메인 문구 폰트 두께 수정 --- */
+header h1 {
+    font-family: var(--font-primary) !important; 
+    font-size: 3em; 
+    margin-bottom: 0.1em;
+    font-weight: 700; 
+    letter-spacing: -1.5px; 
+    color: var(--main-text);
+}
+
+.highlight-text {
+    font-size: 1.1em;
+    font-weight: 400; 
+    color: var(--sub-text); 
+    margin-top: 5px;
+}
+
+/* 네비게이션: 유지 */
+nav {
+    background: white; 
+    padding: 0.5em 0;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+nav ul {
+    list-style: none;
+    text-align: center;
+}
+
+nav ul li {
+    display: inline-block;
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: var(--sub-text); 
+    text-decoration: none;
+    padding: 8px 10px;
+    font-size: 0.9em;
+    font-weight: 500;
+    border-bottom: 3px solid transparent; 
+    transition: color 0.2s ease, border-bottom-color 0.2s ease;
+}
+
+nav ul li a:hover,
+nav ul li a.active {
+    color: var(--main-text);
+    border-bottom-color: var(--accent-color); 
+}
+
+/* --- 메인 컨테이너 및 섹션 레이아웃 (유지) --- */
+.container {
+    width: 95%;
+    max-width: 1300px;
+    margin: 30px auto;
+    display: flex;
+    gap: 20px; 
+    min-height: 60vh;
+}
+
+main {
+    flex: 4; 
+    background: transparent; 
+    padding: 0; 
+    border-radius: 0;
+    box-shadow: none; 
+}
+
+main h2 {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: var(--main-text);
+    margin-bottom: 25px;
+}
+
+aside {
+    flex: 1;
+    min-width: 200px;
+    background: white;
+    padding: 20px;
+    border-radius: var(--radius-small);
+    box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+}
+
+aside h3 {
+    font-size: 1.1em;
+    color: var(--main-text);
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+}
+
+/* 두 번째 섹션 제목의 여백 추가 */
+aside .second-header {
+    margin-top: 20px;
+}
+
+/* --- A. 사용자 정보/입력 필드 스타일 --- */
+.user-info-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; 
+    margin-bottom: 20px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px dotted var(--border-color); 
+}
+
+.info-item:last-child {
+    border-bottom: none; 
+}
+
+.info-item label {
+    font-weight: 500;
+    color: var(--sub-text);
+    flex-basis: 30%; 
+}
+
+/* Input 필드 스타일 */
+.info-item input {
+    flex-grow: 1;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 5px 8px;
+    font-size: 0.9em;
+    font-weight: 500;
+    color: var(--main-text);
+    text-align: right; 
+    margin-right: 0; 
+    transition: border-color 0.2s;
+}
+
+.info-item input:focus {
+    border-color: var(--accent-color);
+    outline: none;
+}
+
+/* 설정 저장 버튼 스타일 */
+#saveButton {
+    width: 100%;
+    padding: 10px;
+    margin-top: 15px;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius-small);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+#saveButton:hover {
+    background-color: #e64500; 
+}
+
+
+/* --- B. 설정 목록 스타일 (링크) --- */
+aside ul {
+    list-style: none;
+    display: block; 
+    padding: 0;
+    margin: 0; 
+}
+
+aside ul li {
+    margin-bottom: 0; 
+}
+
+aside ul li a {
+    display: block; 
+    padding: 10px 0; 
+    background-color: transparent; 
+    color: var(--main-text);
+    border: none; 
+    border-radius: 0; 
+    text-decoration: none;
+    font-size: 1em;
+    font-weight: 400;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s ease;
+}
+
+aside ul li:last-child a {
+    border-bottom: none;
+}
+
+aside ul li a:hover {
+    background-color: var(--background-light); 
+    color: var(--main-text); 
+    border-color: var(--border-color);
+}
+
+/* --- C. 가로 스크롤 컨테이너 스타일 --- */
+.horizontal-scroll-container {
+    overflow-x: auto; 
+    overflow-y: hidden; 
+    white-space: nowrap; 
+    padding-bottom: 20px; 
+    -ms-overflow-style: none; 
+    scrollbar-width: none; 
+}
+
+.horizontal-scroll-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* --- D. 앨범 커버 그리드 수정 (가로 배열) --- */
+.playlist-grid {
+    display: flex; 
+    flex-wrap: nowrap; 
+    gap: 20px; 
+}
+
+.playlist-item {
+    background-color: white;
+    border-radius: var(--radius-small); 
+    padding: 0; 
+    text-align: left; 
+    transition: box-shadow 0.3s ease, transform 0.1s ease;
+    cursor: pointer;
+    overflow: hidden; 
+    box-shadow: 0 1px 6px rgba(0,0,0,0.1); 
+    min-width: 220px; 
+    max-width: 220px;
+}
+
+.playlist-item:hover {
+    transform: scale(1.02); 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15); 
+}
+
+.album-cover-placeholder {
+    width: 100%;
+    padding-bottom: 100%; 
+    background-color: var(--background-dark); 
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.album-cover-placeholder::before {
+    content: '▶︎';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(252, 79, 0, 0.7); 
+    opacity: 0; 
+    transition: opacity 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 3em;
+}
+
+.playlist-item:hover .album-cover-placeholder::before {
+    opacity: 1; 
+}
+
+.playlist-text {
+    padding: 12px;
+}
+
+.playlist-item h3 {
+    font-size: 1em;
+    margin-bottom: 2px;
+    color: var(--main-text);
+    font-weight: 600;
+}
+
+.playlist-item p {
+    font-size: 0.8em;
+    color: var(--sub-text);
+}
+
+/* 푸터 스타일 */
+footer {
+    background: white;
+    color: var(--sub-text);
+    text-align: center;
+    padding: 1.5em 0;
+    margin-top: 40px;
+    font-size: 0.85em;
+    border-top: 1px solid var(--border-color);
+}
+
+/* 미디어 쿼리 (모바일 반응형) */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        width: 95%;
+        gap: 15px;
+    }
+
+    aside {
+        order: -1; 
+        margin-bottom: 10px;
+    }
+
+    /* 모바일에서 가로 스크롤 아이템 너비 조정 */
+    .playlist-item {
+        min-width: 150px; 
+        max-width: 150px;
+    }
+
+    .playlist-grid {
+        gap: 10px;
+    }
+}

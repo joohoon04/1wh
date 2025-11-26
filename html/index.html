@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2025 by yjy-coder-coder (http://jsbin.com/xufadux/1/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>음악과 함께하는 작업 시간</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style id="jsbin-css">
+/* 기본 스타일 유지 */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --accent-color: #FC4F00; 
+    --main-text: #111; 
+    --sub-text: #666;
+    --background-light: #F0F0F0; 
+    --background-dark: #222;
+    --border-color: #E0E0E0; 
+    --radius-small: 8px; 
+    --font-primary: 'Noto Sans KR', sans-serif; /* 산세리프 폰트 */
+}
+
+body {
+    font-family: var(--font-primary);
+    line-height: 1.5;
+    background-color: var(--background-light); 
+    color: var(--main-text);
+}
+
+/* --- 상단 메인 문구 폰트 강제 적용 --- */
+header {
+    background: white; 
+    padding: 40px 0; 
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05); 
+}
+
+/* --- 상단 메인 문구 폰트 두께 수정 --- */
+header h1 {
+    /* 폰트 패밀리를 Noto Sans KR로 강제 지정 */
+    font-family: var(--font-primary) !important; 
+    font-size: 3em; 
+    margin-bottom: 0.1em;
+    /* 폰트 두께를 900 -> 700 (Bold)로 변경 */
+    font-weight: 700; 
+    letter-spacing: -1.5px; 
+    color: var(--main-text);
+}
+
+.highlight-text {
+    font-size: 1.1em;
+    font-weight: 400; 
+    color: var(--sub-text); 
+    margin-top: 5px;
+}
+
+/* 네비게이션: 유지 */
+nav {
+    background: white; 
+    padding: 0.5em 0;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 20px;
+}
+
+nav ul {
+    list-style: none;
+    text-align: center;
+}
+
+nav ul li {
+    display: inline-block;
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: var(--sub-text); 
+    text-decoration: none;
+    padding: 8px 10px;
+    font-size: 0.9em;
+    font-weight: 500;
+    border-bottom: 3px solid transparent; 
+    transition: color 0.2s ease, border-bottom-color 0.2s ease;
+}
+
+nav ul li a:hover,
+nav ul li a.active {
+    color: var(--main-text);
+    border-bottom-color: var(--accent-color); 
+}
+
+/* --- 메인 컨테이너 및 섹션 레이아웃 (유지) --- */
+.container {
+    width: 95%;
+    max-width: 1300px;
+    margin: 30px auto;
+    display: flex;
+    gap: 20px; 
+    min-height: 60vh;
+}
+
+main {
+    flex: 4; 
+    background: transparent; 
+    padding: 0; 
+    border-radius: 0;
+    box-shadow: none; 
+}
+
+main h2 {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: var(--main-text);
+    margin-bottom: 25px;
+}
+
+aside {
+    flex: 1;
+    min-width: 200px;
+    background: white;
+    padding: 20px;
+    border-radius: var(--radius-small);
+    box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+}
+
+aside h3 {
+    font-size: 1.1em;
+    color: var(--main-text);
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+}
+
+/* --- 해시태그 UI 수정 (버튼/태그 스타일 명확화) --- */
+aside ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 10px; /* 간격 확대 */
+}
+
+aside ul li {
+    margin-bottom: 0; 
+}
+
+aside ul li a {
+    display: inline-block; 
+    padding: 6px 14px; /* 패딩 확대 */
+    background-color: var(--background-light); /* 버튼 배경색 적용 */
+    color: var(--sub-text);
+    border: 1px solid var(--border-color); /* 테두리 명확화 */
+    border-radius: 20px; 
+    text-decoration: none;
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+aside ul li a:hover {
+    background-color: var(--accent-color); 
+    color: white; 
+    border-color: var(--accent-color);
+}
+
+/* --- 앨범 커버 그리드 (유지) --- */
+.playlist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+    gap: 20px; 
+}
+
+.playlist-item {
+    background-color: white;
+    border-radius: var(--radius-small); 
+    padding: 0; 
+    text-align: left; 
+    transition: box-shadow 0.3s ease, transform 0.1s ease;
+    cursor: pointer;
+    overflow: hidden; 
+    box-shadow: 0 1px 6px rgba(0,0,0,0.1); 
+}
+
+.playlist-item:hover {
+    transform: scale(1.02); 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15); 
+}
+
+.album-cover-placeholder {
+    width: 100%;
+    padding-bottom: 100%; 
+    background-color: var(--background-dark); 
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.album-cover-placeholder::before {
+    content: '▶︎';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(252, 79, 0, 0.7); 
+    opacity: 0; 
+    transition: opacity 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 3em;
+}
+
+.playlist-item:hover .album-cover-placeholder::before {
+    opacity: 1; 
+}
+
+.playlist-text {
+    padding: 12px;
+}
+
+.playlist-item h3 {
+    font-size: 1em;
+    margin-bottom: 2px;
+    color: var(--main-text);
+    font-weight: 600;
+}
+
+.playlist-item p {
+    font-size: 0.8em;
+    color: var(--sub-text);
+}
+
+/* 푸터 스타일 */
+footer {
+    background: white;
+    color: var(--sub-text);
+    text-align: center;
+    padding: 1.5em 0;
+    margin-top: 40px;
+    font-size: 0.85em;
+    border-top: 1px solid var(--border-color);
+}
+
+/* 미디어 쿼리 (모바일 반응형) */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        width: 95%;
+        gap: 15px;
+    }
+
+    aside {
+        order: -1; 
+        margin-bottom: 10px;
+    }
+
+    .playlist-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+    }
+}
+</style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>음악과 함께하는 작업 시간</h1>
+            <p class="highlight-text">작업 시간이 힘들고 괴롭다면? 이제는 음악과 함께해요.</p>
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html" class="active">홈</a></li>
+            <li><a href="#">플레이리스트</a></li>
+            <li><a href="#">작업시간 체크</a></li>
+            <li><a href="mypage.html">My 뮤직</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <main>
+            <h2>나를 위한 플레이리스트</h2>
+            <div class="playlist-grid">
+                
+                <div class="playlist-item">
+                    <div class="album-cover-placeholder"></div>
+                    <div class="playlist-text">
+                        <h3>밤샘 작업 플레이리스트</h3>
+                        <p>피곤함을 잊게 할 리듬</p>
+                    </div>
+                </div>
+                <div class="playlist-item">
+                    <div class="album-cover-placeholder"></div>
+                    <div class="playlist-text">
+                        <h3>스케치용 플레이리스트</h3>
+                        <p>창의력을 자극하는 선율</p>
+                    </div>
+                </div>
+                <div class="playlist-item">
+                    <div class="album-cover-placeholder"></div>
+                    <div class="playlist-text">
+                        <h3>생각 정리 플레이리스트</h3>
+                        <p>집중력을 높이는 명상 음악</p>
+                    </div>
+                </div>
+                <div class="playlist-item">
+                    <div class="album-cover-placeholder"></div>
+                    <div class="playlist-text">
+                        <h3>코딩할 때 음악</h3>
+                        <p>몰입도를 높이는 백색 소음</p>
+                    </div>
+                </div>
+                <div class="playlist-item">
+                    <div class="album-cover-placeholder"></div>
+                    <div class="playlist-text">
+                        <h3>집중력 강화</h3>
+                        <p>산만함을 없애는 잔잔한 곡</p>
+                    </div>
+                </div>
+                <div class="playlist-item">
+                    <div class="album-cover-placeholder"></div>
+                    <div class="playlist-text">
+                        <h3>휴식 시간</h3>
+                        <p>재충전을 위한 편안한 곡</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside>
+            <h3>이런 플레이리스트도?</h3>
+            <ul>
+                <li><a href="#">#재즈</a></li>
+                <li><a href="#">#뉴에이지</a></li>
+                <li><a href="#">#클래식</a></li>
+                <li><a href="#">#시티팝</a></li>
+                <li><a href="#">#로파이</a></li>
+            </ul>
+        </aside>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Music for Work. All rights reserved.</p>
+    </footer>
+</body>
+</html>
