@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=375, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>작업 시간 체크</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --accent-color: #FC4F00;
+            --main-text: #111;
+            --sub-text: #666;
+            --background-light: #F0F0F0;
+            --border-color: #E0E0E0;
+            --radius-small: 8px;
+            --font-primary: 'Pretendard Variable', Pretendard, sans-serif;
+            --focus-color: #FC4F00; 
+            --normal-color: #007BFF; 
+        }
+
+        body {
+            width: 375px;
+            margin: 0 auto;
+            /* 폰트: 본문 (미디움, 13px) 기본값 설정 */
+            font-family: var(--font-primary);
+            line-height: 1.5;
+            color: var(--main-text);
+            font-size: 13px; 
+            font-weight: 500;
+            overflow-x: hidden;
+        }
+
+        /* 제목 (볼드, 24px) - h1, h2 등에 적용 */
+        h1, h2, h3, h4, h5, h6 {
+            font-size: 24px;
+            font-weight: 700; /* 볼드(700) */
+            margin-bottom: 0.5em; 
+            line-height: 1.2;
+            color: var(--main-text);
+        }
+
+        /* 서브 (미디움, 10px) - 작은 텍스트에 적용 */
+        .highlight-text, .stat-label, footer p {
+            font-size: 10px;
+            font-weight: 500; /* 미디움(500) */
+            color: var(--sub-text); 
+        }
+
+        /* --- 상단 헤더 스타일 --- */
+        header {
+            background: white;
+            padding: 40px 0;
+            text-align: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        header h1 {
+            margin-bottom: 0.1em;
+            color: var(--accent-color);
+            letter-spacing: -2px;
+        }
+
+        /* --- 네비게이션 스타일 --- */
+        nav {
+            color: black;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            margin: 0 auto;
+            padding: 0 20px; /* 좌우 여백 20px */
+        }
+
+        nav li {
+            margin: 0 15px;
+        }
+
+        nav a {
+            color: black;
+            text-decoration: none;
+            padding: 5px 0;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        /* --- 작업 시간 체크 페이지 --- */
+        .main-content-work {
+            padding: 0 20px 40px 20px; /* 좌우 여백 20px 적용 */
+        }
+
+        .main-content-work main {
+            /* 반응형 제거: 세로로 쌓기 */
+            display: block; 
+            gap: 0;
+            padding-top: 20px;
+        }
+
+        .timer-control-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0; 
+            border-right: none; 
+            border-bottom: 1px solid var(--border-color); /* 구분선 추가 */
+            margin-bottom: 30px;
+        }
+
+        /* --- 타이머 디스플레이는 기존 크기 유지 --- */
+        .timer-display {
+            font-size: 3.5em; 
+            font-weight: 800; 
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            color: var(--focus-color); 
+            transition: color 0.3s ease;
+            padding: 10px 0;
+        }
+
+        .mode-selector {
+            display: flex;
+            margin-bottom: 30px;
+            background-color: white;
+            padding: 4px;
+            border-radius: var(--radius-small);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .mode-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: var(--radius-small);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: transparent;
+            color: var(--sub-text);
+            min-width: 120px;
+        }
+
+        .mode-btn.active {
+            background-color: var(--background-light);
+            color: var(--main-text);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+            max-width: 280px; 
+        }
+
+        .control-btn {
+            flex: 1;
+            padding: 12px 10px;
+            border: none;
+            border-radius: var(--radius-small);
+            font-size: 13px; /* 본문 규격 적용 */
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .start-btn {
+            background-color: var(--focus-color);
+            color: white;
+        }
+
+        .start-btn:hover:not(:disabled) {
+            background-color: #E84500;
+        }
+
+        .pause-btn {
+            background-color: #FFA000;
+            color: white;
+        }
+
+        .pause-btn:hover:not(:disabled) {
+            background-color: #e69100;
+        }
+
+        .stop-btn {
+            background-color: var(--main-text);
+            color: white;
+        }
+
+        .stop-btn:disabled {
+            background-color: #ccc;
+            cursor: default;
+        }
+
+        /* --- Status Message --- */
+        .status-message {
+            font-size: 13px; /* 본문 규격 적용 */
+            font-weight: 500;
+            margin-bottom: 20px;
+            color: var(--main-text);
+        }
+
+        /* --- Message Box --- */
+        .message-box {
+            margin-top: 20px;
+            padding: 10px 15px;
+            border-radius: var(--radius-small);
+            font-size: 13px; /* 본문 규격 적용 */
+            font-weight: 500;
+            text-align: center;
+            width: 100%;
+            transition: opacity 0.3s;
+        }
+
+        .message-box.hidden {
+            opacity: 0;
+            height: 0;
+            padding: 0 15px;
+            margin: 0;
+        }
+
+        .message-box.success {
+            background-color: #e6ffed;
+            color: #008000;
+        }
+
+        .message-box.error {
+            background-color: #ffe6e6;
+            color: #ff0000;
+        }
+
+        .message-box.warning {
+            background-color: #fffde7;
+            color: #FFA000;
+        }
+
+        .analysis-section {
+            padding: 20px 0;
+        }
+
+        .analysis-section h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* --- Stats Summary Cards --- */
+        .stats-summary {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px; 
+            margin-bottom: 30px;
+            flex-wrap: nowrap; 
+        }
+
+        .stat-card {
+            background-color: white;
+            padding: 10px; 
+            border-radius: var(--radius-small);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            flex: 1;
+            min-width: 0; 
+            text-align: center;
+        }
+
+        /* stat-label은 위 서브 규격 적용 */
+
+        .stat-value {
+            font-size: 18px; 
+            font-weight: 700;
+            color: var(--main-text);
+            line-height: 1.2;
+        }
+
+        .focus-stat .stat-value {
+            color: var(--focus-color);
+        }
+
+        .normal-stat .stat-value {
+            color: var(--normal-color);
+        }
+
+        .chart-container {
+            height: 250px; 
+            width: 100%;
+        }
+
+        /* --- 푸터 스타일 --- */
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            border-top: 1px solid var(--border-color);
+            background-color: white;
+        }
+
+    </style>
+    </head>
+<body>
+    <header>
+        <h1>Music for Work</h1>
+        <p class="highlight-text">집중력을 높여주는 음악을 플레이하세요!</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">홈</a></li>
+            <li><a href="#">플레이리스트</a></li>
+            <li class="active"><a href="workinghours.html" class="active">작업시간 체크</a></li>
+            <li><a href="mypage.html">My 뮤직</a></li>
+        </ul>
+    </nav>
+    
+    <div class="main-content-work">
+        <main>
+            <section class="timer-control-section">
+                <h2>작업 타이머</h2>
+                <div class="mode-selector">
+                    <button class="mode-btn active" id="focusModeBtn" data-mode="Focus">🔥 집중 모드</button>
+                    <button class="mode-btn" id="normalModeBtn" data-mode="Normal">☕ 일반 모드</button>
+                </div>
+                <div id="timerDisplay" class="timer-display">00:00:00</div>
+                <div id="statusMessage" class="status-message">🔥 집중 모드 (시작 대기)</div>
+
+                <div class="control-buttons">
+                    <button id="startBtn" class="control-btn start-btn">시작</button>
+                    <button id="stopBtn" class="control-btn stop-btn" disabled>정지 & 저장</button>
+                </div>
+                
+                <div id="messageBox" class="message-box hidden"></div>
+            </section>
+
+            <section class="analysis-section">
+                <h2>작업 분석</h2>
+                <div class="stats-summary">
+                    <div class="stat-card focus-stat">
+                        <p class="stat-label">집중 모드 총 시간</p>
+                        <p id="focusTotalTime" class="stat-value">0시간 0분</p>
+                    </div>
+                    <div class="stat-card normal-stat">
+                        <p class="stat-label">일반 모드 총 시간</p>
+                        <p id="normalTotalTime" class="stat-value">0시간 0분</p>
+                    </div>
+                    <div class="stat-card total-stat">
+                        <p class="stat-label">총 작업 시간</p>
+                        <p id="grandTotalTime" class="stat-value">0시간 0분</p>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="workingHoursChart"></canvas>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Music for Work. All rights reserved.</p>
+    </footer>
+    <script>
+        // Apps Script 웹 앱 URL.
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyRqIwG5kFRLfdXD9TndJFolb4qvkopgDgsJrM_8jp3Z2r-yWxMfY8DaqlPIHe55q6ajA/exec"; 
+        
+        // ----- 타이머 상태 변수 -----
+        let timerInterval;
+        let startTime = 0;
+        let elapsedTime = 0;
+        let isRunning = false;
+        let currentMode = 'Focus'; // 기본 모드: Focus
+
+        // ----- DOM 요소 -----
+        const timerDisplay = document.getElementById('timerDisplay');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const focusModeBtn = document.getElementById('focusModeBtn');
+        const normalModeBtn = document.getElementById('normalModeBtn');
+        const statusMessage = document.getElementById('statusMessage');
+        const messageBox = document.getElementById('messageBox');
+        
+        // ----- Chart.js 및 데이터 변수 -----
+        let workingHoursChart;
+        let recentData = []; // Sheets에서 불러온 최근 작업 로그 데이터
+
+        // Chart.js 인스턴스 초기화
+        function initChart() {
+            const ctx = document.getElementById('workingHoursChart').getContext('2d');
+            workingHoursChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [], // 날짜 (예: 월요일, 화요일)
+                    datasets: [{
+                        label: '집중 모드 (분)',
+                        data: [], // 집중 시간 데이터
+                        backgroundColor: 'rgba(252, 79, 0, 0.7)',
+                        borderColor: '#FC4F00',
+                        borderWidth: 1
+                    }, {
+                        label: '일반 모드 (분)',
+                        data: [], // 일반 시간 데이터
+                        backgroundColor: 'rgba(0, 123, 255, 0.7)',
+                        borderColor: '#007BFF',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '작업 시간 (분)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: '최근 7일 집중 vs 일반 작업 시간'
+                        }
+                    }
+                }
+            });
+        }
+        
+        // ----- 데이터 변환 및 차트 업데이트 함수 -----
+        function updateChart(logs) {
+            // [FIX] logs가 유효한 배열인지 확인하여 TypeError를 방지합니다.
+            if (!Array.isArray(logs)) {
+                console.warn("차트 업데이트를 위한 유효한 작업 로그 데이터가 수신되지 않았습니다.");
+                
+                // 데이터가 없을 경우 통계를 0으로 초기화하고 차트를 비웁니다.
+                document.getElementById('focusTotalTime').textContent = "0시간 0분";
+                document.getElementById('normalTotalTime').textContent = "0시간 0분";
+                document.getElementById('grandTotalTime').textContent = "0시간 0분";
+                
+                workingHoursChart.data.labels = [];
+                workingHoursChart.data.datasets[0].data = [];
+                workingHoursChart.data.datasets[1].data = [];
+                workingHoursChart.update();
+                
+                return; 
+            }
+
+            // 최근 7일 데이터만 필터링
+            const today = new Date();
+            const sevenDaysAgo = new Date(today);
+            sevenDaysAgo.setDate(today.getDate() - 7);
+
+            const filteredLogs = logs.filter(log => new Date(log.StartTimestamp) >= sevenDaysAgo);
+
+            // 날짜별 데이터 집계
+            const aggregatedData = {};
+            filteredLogs.forEach(log => {
+                // EndTimestamp를 사용하여 날짜 키 생성
+                const endDateTime = new Date(log.EndTimestamp);
+                const dateKey = endDateTime.toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' });
+                // 작업 시간: 밀리초를 분으로 변환 (소수점 첫째 자리에서 반올림)
+                const durationMinutes = Math.round(log.Duration / (1000 * 60)); 
+
+                if (!aggregatedData[dateKey]) {
+                    aggregatedData[dateKey] = { Focus: 0, Normal: 0 };
+                }
+                aggregatedData[dateKey][log.Mode] += durationMinutes;
+            });
+            
+            // 차트 데이터 형식에 맞게 변환
+            const labels = Object.keys(aggregatedData).sort();
+            const focusData = labels.map(date => aggregatedData[date].Focus);
+            const normalData = labels.map(date => aggregatedData[date].Normal);
+
+            // 요약 통계 업데이트
+            const totalFocus = focusData.reduce((sum, val) => sum + val, 0);
+            const totalNormal = normalData.reduce((sum, val) => sum + val, 0);
+
+            document.getElementById('focusTotalTime').textContent = formatMinutesToHours(totalFocus);
+            document.getElementById('normalTotalTime').textContent = formatMinutesToHours(totalNormal);
+            document.getElementById('grandTotalTime').textContent = formatMinutesToHours(totalFocus + totalNormal);
+
+            // 차트 업데이트
+            workingHoursChart.data.labels = labels;
+            workingHoursChart.data.datasets[0].data = focusData;
+            workingHoursChart.data.datasets[1].data = normalData;
+            workingHoursChart.update();
+        }
+
+        // 분을 "X시간 Y분" 형식으로 포맷
+        function formatMinutesToHours(totalMinutes) {
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = Math.round(totalMinutes % 60);
+            return `${hours}시간 ${minutes}분`;
+        }
+
+        // ----- Apps Script 데이터 불러오기 함수 -----
+        async function fetchWorkLogs() {
+            if (!WEB_APP_URL) {
+                displayMessage("❌ 오류: Google Apps Script URL을 설정해주세요!", "error");
+                return;
+            }
+
+            displayMessage("데이터를 불러오는 중...", "loading");
+            try {
+                const response = await fetch(WEB_APP_URL, {
+                    method: 'GET',
+                    mode: 'cors' 
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const logs = await response.json(); 
+                recentData = logs;
+                updateChart(recentData);
+                displayMessage("📊 최신 통계가 업데이트되었습니다.", "success");
+
+            } catch (error) {
+                console.error("작업 로그를 불러오는 중 오류:", error);
+                displayMessage("❌ 통계를 불러오는 데 실패했습니다. Apps Script URL 및 권한을 확인하세요.", "error");
+            }
+        }
+
+        // ----- 타이머 관련 함수 -----
+
+        function startTimer() {
+            if (isRunning) return;
+            
+            if (!WEB_APP_URL) {
+                displayMessage("❌ 오류: Google Apps Script URL을 설정해야 타이머를 시작할 수 있습니다.", "error");
+                return;
+            }
+
+
+            startTime = Date.now() - elapsedTime;
+            isRunning = true;
+            
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            // UI 업데이트
+            startBtn.classList.add('hidden');
+            stopBtn.classList.remove('hidden');
+            stopBtn.disabled = false;
+            statusMessage.textContent = `${currentMode === 'Focus' ? '🔥 집중 모드' : '☕ 일반 모드'} 작업이 시작되었습니다.`;
+            statusMessage.classList.remove('hidden', 'error');
+            statusMessage.classList.add('success');
+            displayMessage(''); // 메시지 박스 초기화
+        }
+
+        function updateTimer() {
+            elapsedTime = Date.now() - startTime;
+            timerDisplay.textContent = formatTime(elapsedTime);
+        }
+
+        function formatTime(ms) {
+            const totalSeconds = Math.floor(ms / 1000);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+
+            const pad = num => num.toString().padStart(2, '0');
+            return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        }
+
+        function stopTimer() {
+            if (!isRunning) return;
+            
+            clearInterval(timerInterval);
+            isRunning = false;
+            
+            const durationMs = elapsedTime;
+            const endTime = new Date();
+            const startTimestamp = new Date(endTime.getTime() - durationMs);
+
+            // 최소 10초 이상 작업했을 때만 저장
+            if (durationMs < 10000) {
+                 displayMessage("작업 시간이 너무 짧아 저장되지 않았습니다. (최소 10초)", "warning");
+            } else {
+                 saveWorkLog(startTimestamp, endTime, durationMs, currentMode);
+            }
+           
+            // 타이머 초기화
+            elapsedTime = 0;
+            timerDisplay.textContent = "00:00:00";
+
+            // UI 업데이트
+            startBtn.classList.remove('hidden');
+            stopBtn.classList.add('hidden');
+            stopBtn.disabled = true;
+            statusMessage.textContent = '작업이 종료되었습니다. 다시 시작하세요.';
+            statusMessage.classList.remove('success');
+            statusMessage.classList.add('error');
+        }
+
+        // ----- 데이터 저장 함수 -----
+        async function saveWorkLog(start, end, duration, mode) {
+            if (!WEB_APP_URL) {
+                 displayMessage("❌ 오류: Google Apps Script URL이 설정되지 않아 데이터를 저장할 수 없습니다.", "error");
+                 return;
+            }
+            
+            displayMessage("데이터를 Google Sheets에 저장 중...", "loading");
+            
+            const data = {
+                StartTimestamp: start.toISOString(),
+                EndTimestamp: end.toISOString(),
+                Duration: duration, // 밀리초
+                Mode: mode,
+            };
+
+            try {
+                // Apps Script 웹 앱으로 POST 요청 전송
+                // no-cors 모드는 CORB 오류를 유발할 수 있으나, Sheets 쓰기에는 가장 안정적인 방식입니다.
+                const response = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', 
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams(data) 
+                });
+                
+                // no-cors 모드에서는 응답을 읽을 수 없으므로, fetch 성공 시 성공으로 간주합니다.
+                
+                displayMessage("✅ 작업 시간이 성공적으로 기록되었습니다! 통계 업데이트 중...", "success");
+                
+                // 데이터 저장 후 최신 통계 다시 불러오기
+                setTimeout(fetchWorkLogs, 2000); // Sheets에 데이터가 반영될 시간을 줌
+
+            } catch (error) {
+                console.error('Error saving work log:', error);
+                displayMessage("❌ 데이터 저장 중 오류 발생. 콘솔을 확인하세요.", "error");
+            }
+        }
+
+        // ----- 모드 변경 함수 -----
+        function setMode(mode) {
+            if (isRunning) {
+                displayMessage("❌ 현재 타이머가 실행 중입니다. 모드를 변경하려면 종료하세요.", "warning");
+                return;
+            }
+            currentMode = mode;
+
+            focusModeBtn.classList.remove('active');
+            normalModeBtn.classList.remove('active');
+
+            if (mode === 'Focus') {
+                focusModeBtn.classList.add('active');
+                statusMessage.textContent = '🔥 집중 모드 (시작 대기)';
+                timerDisplay.style.color = 'var(--focus-color)';
+            } else {
+                normalModeBtn.classList.add('active');
+                statusMessage.textContent = '☕ 일반 모드 (시작 대기)';
+                timerDisplay.style.color = 'var(--normal-color)';
+            }
+        }
+        
+        // ----- 메시지 박스 함수 (alert() 대체) -----
+        function displayMessage(message, type) {
+            messageBox.textContent = message;
+            messageBox.className = 'message-box'; // 기존 클래스 초기화
+            if (message) {
+                messageBox.classList.remove('hidden');
+                messageBox.classList.add(type);
+            } else {
+                 messageBox.classList.add('hidden');
+            }
+        }
+
+        // ----- 이벤트 리스너 -----
+        startBtn.addEventListener('click', startTimer);
+        stopBtn.addEventListener('click', stopTimer);
+        focusModeBtn.addEventListener('click', () => setMode('Focus'));
+        normalModeBtn.addEventListener('click', () => setMode('Normal'));
+
+        // ----- 초기화 -----
+        window.onload = () => {
+            initChart();
+            setMode('Focus'); // 초기 모드 설정 및 UI 반영
+            fetchWorkLogs(); // 초기 데이터 로드
+        };
+
+    </script>
+</body>
+</html>

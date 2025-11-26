@@ -7,7 +7,357 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="mypage.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --accent-color: #FC4F00;
+            --main-text: #111;
+            --sub-text: #666;
+            --background-light: #F0F0F0;
+            --background-dark: #222;
+            --border-color: #E0E0E0;
+            --radius-small: 8px;
+            --font-primary: 'Pretendard Variable', Pretendard, sans-serif; 
+            --font-size-title: 24px; 
+            --font-size-body: 13px;  
+            --font-size-sub: 10px;   
+            --font-weight-bold: 700; 
+            --font-weight-medium: 500; 
+        }
+
+        body {
+            width: 375px;
+            margin: 0 auto;
+            
+            font-family: var(--font-primary);
+            line-height: 1.5;
+            color: var(--main-text);
+            font-size: 13px; 
+            font-weight: 500;
+            overflow-x: hidden;
+        }
+
+        /* --- 상단 헤더 스타일 --- */
+        header {
+            background: white;
+            padding: 30px 20px; 
+            text-align: center;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        header h1 {
+            font-family: var(--font-primary) !important;
+            font-size: var(--font-size-title); 
+            margin-bottom: 0.1em;
+            font-weight: var(--font-weight-bold); 
+            color: var(--accent-color);
+            letter-spacing: -1px;
+        }
+
+        header .highlight-text {
+            font-size: var(--font-size-sub); 
+            color: var(--sub-text);
+            font-weight: var(--font-weight-medium); 
+        }
+
+        /* --- 네비게이션 스타일 --- */
+        nav {
+            color: black;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            margin: 0 auto;
+            padding: 0 20px; 
+            flex-wrap: wrap; 
+        }
+
+        nav li {
+            margin: 5px 10px; 
+        }
+        
+        nav li.active a {
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        nav a {
+            color: black;
+            text-decoration: none;
+            font-size: var(--font-size-body); 
+            font-weight: var(--font-weight-medium); 
+            padding: 5px 0;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        /* --- 메인 레이아웃  --- */
+        .container {
+            display: flex;
+            flex-direction: column;
+            max-width: 1200px; 
+            margin: 20px auto 40px auto;
+            padding: 0 20px; 
+            gap: 40px; 
+        }
+
+        aside {
+            flex: 0 0 auto; 
+            padding-top: 0; 
+            max-width: 700px;
+            align-self: center;
+        }
+        
+        .playlist-container {
+            width: 100%; 
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        main {
+            padding-top: 0; 
+            margin-bottom: 0; 
+        }
+
+        aside h3 {
+            font-size: var(--font-size-body); 
+            color: var(--main-text);
+            margin-bottom: 15px;
+            font-weight: var(--font-weight-bold); 
+        }
+        
+        aside h3.second-header {
+            margin-top: 30px; 
+        }
+
+        /* 폼 스타일 */
+        #userInfoForm {
+            background-color: white;
+            padding: 20px;
+            border-radius: var(--radius-small);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            max-width: none; 
+        }
+        
+        .info-item {
+            margin-bottom: 15px;
+        }
+
+        .info-item input, .info-item select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: var(--font-primary);
+            font-size: var(--font-size-body); 
+            font-weight: var(--font-weight-medium); 
+        }
+
+        .info-item label {
+            display: block;
+            font-size: var(--font-size-body); 
+            margin-bottom: 5px;
+            color: var(--main-text);
+            font-weight: var(--font-weight-medium); 
+        }
+
+        #saveButton {
+            margin-top: 20px; 
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+            width: 100%;
+        }
+
+        #saveButton:hover:not(:disabled) {
+            background-color: #E84500;
+        }
+
+        #saveButton:disabled {
+            background-color: #ccc;
+            cursor: default;
+        }
+
+        /* --- 해시태그 버튼 스타일 (작업 스타일) --- */
+        .hashtag-list {
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .hashtag-button {
+            display: inline-block;
+            background-color: var(--background-light); 
+            color: var(--sub-text);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: var(--font-size-body); 
+            font-weight: var(--font-weight-medium);
+            margin-right: 5px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+        }
+
+        .hashtag-button:hover {
+            background-color: #EEE;
+            border-color: var(--accent-color);
+        }
+        
+        .hashtag-button.selected {
+            background-color: var(--accent-color);
+            color: white;
+            font-weight: var(--font-weight-bold);
+            border-color: var(--accent-color);
+        }
+
+        /* --- 플레이리스트 그리드 및 가로 스크롤 --- */
+        main h2 {
+            font-size: var(--font-size-title); 
+            margin-bottom: 25px;
+            font-weight: var(--font-weight-bold); 
+            color: var(--main-text);
+        }
+        
+        /* 가로 스크롤 컨테이너 스타일 */
+        .horizontal-scroll-container {
+            overflow-x: auto; 
+            -webkit-overflow-scrolling: touch; 
+            padding: 10px 0; 
+            margin: -10px 0; 
+        }
+
+        .playlist-grid {
+            display: grid;
+            grid-auto-flow: column; 
+            grid-template-rows: auto;
+            grid-template-columns: repeat(8, 180px);
+            gap: 15px;
+            width: max-content;
+            padding-bottom: 10px; 
+        }
+        
+        .horizontal-scroll-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .horizontal-scroll-container::-webkit-scrollbar-thumb {
+            background-color: #ccc;
+            border-radius: 4px;
+        }
+        
+        .playlist-item {
+            width: 180px;
+            background-color: white;
+            border-radius: var(--radius-small);
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            align-self: start;
+        }
+
+        .playlist-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+
+        .album-cover-placeholder {
+            width: 100%;
+            padding-bottom: 100%;
+            background-color: var(--background-dark);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .album-cover-placeholder iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* 오버레이 컨테이너 */
+        .cover-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(252, 79, 0, 0.7);
+            opacity: 1;
+            transition: opacity 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 3em;
+            pointer-events: none;
+        }
+
+        .cover-overlay::before {
+            content: '▶︎';
+            color: white;
+        }
+
+        .playlist-item:hover .cover-overlay {
+            opacity: 0;
+        }
+
+        .playlist-text {
+            padding: 12px;
+        }
+
+        .playlist-item h3 {
+            font-size: var(--font-size-body); 
+            margin-bottom: 2px;
+            color: var(--main-text);
+            font-weight: 600; 
+        }
+
+        .playlist-item p {
+            font-size: var(--font-size-sub); 
+            color: var(--sub-text);
+            font-weight: var(--font-weight-medium); 
+        }
+
+        /* 푸터 스타일 */
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            border-top: 1px solid var(--border-color);
+            background-color: white;
+            color: var(--sub-text);
+            font-size: var(--font-size-sub); 
+            font-weight: var(--font-weight-medium); 
+        }
+
+    </style>
 </head>
 <body>
     <header>
@@ -21,7 +371,7 @@
         <ul>
             <li><a href="index.html">홈</a></li>
             <li><a href="#">플레이리스트</a></li>
-            <li><a href="#">작업시간 체크</a></li>
+            <li><a href="workinghours.html">작업시간 체크</a></li>
             <li class="active"><a href="mypage.html" class="active">My 뮤직</a></li>
         </ul>
     </nav>
@@ -35,17 +385,19 @@
                     
                     <div class="info-item">
                         <label for="nickname">닉네임</label>
-                        <input type="text" id="nickname" name="nickname" value="음악과함께하는개발자" required>
+                        <input type="text" id="nickname" name="nickname" value="재훈" required>
                     </div>
                     
                     <div class="info-item">
                         <label for="job">직업/분야</label>
-                        <input type="text" id="job" name="job" value="IT 개발자" required>
+                        <input type="text" id="job" name="job" value="프로그래밍" required>
                     </div>
                     
                     <div class="info-item">
-                        <label for="workStyle">작업 스타일</label>
-                        <input type="text" id="workStyle" name="workStyle" value="밤샘 작업 선호" required>
+                        <label>작업 스타일</label>
+                        <input type="hidden" id="workStyle" name="workStyle" value="밤샘 작업 선호,집중력 필요"> 
+                        <div class="hashtag-list" id="workStyleHashtags">
+                            </div>
                     </div>
                 </div>
 
@@ -53,143 +405,203 @@
                 <div class="user-info-box">
                     <div class="info-item">
                         <label for="genre">좋아하는 장르</label>
-                        <input type="text" id="genre" name="genre" value="로파이, 재즈" required>
+                        <input type="text" id="genre" name="genre" value="K-pop" required>
                     </div>
                     
                     <div class="info-item">
                         <label for="artistSelect">취향 가수</label>
-                        <input type="text" id="artistSelect" name="artistSelect" value="Taylor Swift, IU" required>
+                        <input type="text" id="artistSelect" name="artistSelect" value="LUCY, IU" required>
                     </div>
                 </div>
                 
                 <button type="submit" id="saveButton">설정 저장</button>
-
             </form>
         </aside>
 
-        <main>
-            <h2>나를 위한 플레이리스트</h2> 
-            
-            <div class="horizontal-scroll-container">
-                <div class="playlist-grid">
+        <div class="playlist-container">
+            <main>
+                <h2>내가 만든 플레이리스트</h2> 
+                
+                <div class="horizontal-scroll-container">
+                    <div class="playlist-grid">
 
-                    <div class="playlist-item">
-                        <div class="album-cover-placeholder"></div>
-                        <div class="playlist-text">
-                            <h3>밤샘 작업 플레이리스트</h3>
-                            <p>피곤함을 잊게 할 리듬</p>
+                        <div class="playlist-item">
+                            <div class="album-cover-placeholder"></div>
+                            <div class="playlist-text">
+                                <h3>밤샘 작업 플레이리스트</h3>
+                                <p>피곤함을 잊게 할 리듬</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="playlist-item">
-                        <div class="album-cover-placeholder"></div>
-                        <div class="playlist-text">
-                            <h3>스케치용 플레이리스트</h3>
-                            <p>창의력을 자극하는 선율</p>
+                        <div class="playlist-item">
+                            <div class="album-cover-placeholder"></div>
+                            <div class="playlist-text">
+                                <h3>스케치용 플레이리스트</h3>
+                                <p>창의력을 자극하는 선율</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="playlist-item">
-                        <div class="album-cover-placeholder"></div>
-                        <div class="playlist-text">
-                            <h3>생각 정리 플레이리스트</h3>
-                            <p>집중력을 높이는 명상 음악</p>
+                        <div class="playlist-item">
+                            <div class="album-cover-placeholder"></div>
+                            <div class="playlist-text">
+                                <h3>생각 정리 플레이리스트</h3>
+                                <p>집중력을 높이는 명상 음악</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="playlist-item">
-                        <div class="album-cover-placeholder"></div>
-                        <div class="playlist-text">
-                            <h3>코딩할 때 음악</h3>
-                            <p>몰입도를 높이는 백색 소음</p>
+                        <div class="playlist-item">
+                            <div class="album-cover-placeholder"></div>
+                            <div class="playlist-text">
+                                <h3>코딩할 때 음악</h3>
+                                <p>몰입도를 높이는 백색 소음</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="playlist-item">
-                        <div class="album-cover-placeholder"></div>
-                        <div class="playlist-text">
-                            <h3>집중력 강화</h3>
-                            <p>산만함을 없애는 잔잔한 곡</p>
+                        <div class="playlist-item">
+                            <div class="album-cover-placeholder"></div>
+                            <div class="playlist-text">
+                                <h3>집중력 강화</h3>
+                                <p>산만함을 없애는 잔잔한 곡</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="playlist-item">
-                        <div class="album-cover-placeholder"></div>
-                        <div class="playlist-text">
-                            <h3>휴식 시간</h3>
-                            <p>재충전을 위한 편안한 곡</p>
+                        <div class="playlist-item">
+                            <div class="album-cover-placeholder"></div>
+                            <div class="playlist-text">
+                                <h3>휴식 시간</h3>
+                                <p>재충전을 위한 편안한 곡</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="playlist-item">
-                        <div class="album-cover-placeholder"></div>
-                        <div class="playlist-text">
-                            <h3>감성 폭발 시티팝</h3>
-                            <p>경쾌하고 중독성 있는 멜로디</p>
+                        <div class="playlist-item">
+                            <div class="album-cover-placeholder"></div>
+                            <div class="playlist-text">
+                                <h3>감성 폭발 시티팝</h3>
+                                <p>경쾌하고 중독성 있는 멜로디</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </main>
-        <main>
-            <h2>좋아요</h2> 
+            </main>
             
-            <div class="horizontal-scroll-container">
-                <div class="playlist-grid">
+            <main>
+                <h2>내가 좋아요를 누른 플레이리스트</h2> 
+                
+                <div class="horizontal-scroll-container">
+                    <div class="playlist-grid">
 
-                    <div class="playlist-item">
-                        <div class="album-cover-placeholder"></div>
-                        <div class="playlist-text">
-                            <h3>집중 작업 플레이리스트</h3>
-                            <p>피곤함을 잊게 할 리듬</p>
+                        <div class="playlist-item">
+                            <div class="album-cover-placeholder"></div>
+                            <div class="playlist-text">
+                                <h3>집중 작업 플레이리스트</h3>
+                                <p>피곤함을 잊게 할 리듬</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="playlist-item">
-                        <div class="album-cover-placeholder"></div>
-                        <div class="playlist-text">
-                            <h3>노동 플레이리스트</h3>
-                            <p>창의력을 자극하는 선율</p>
+                        <div class="playlist-item">
+                            <div class="album-cover-placeholder"></div>
+                            <div class="playlist-text">
+                                <h3>노동 플레이리스트</h3>
+                                <p>창의력을 자극하는 선율</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="playlist-item">
-                        <div class="album-cover-placeholder"></div>
-                        <div class="playlist-text">
-                            <h3>생각 정리 플레이리스트</h3>
-                            <p>집중력을 높이는 명상 음악</p>
+                        <div class="playlist-item">
+                            <div class="album-cover-placeholder">
+                                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/DYYJZs18Hq0?si=_cDW1jx9YB8B1ipY&autoplay=0" 
+                                    title="YouTube video player" frameborder="0" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+                                </iframe>
+                                
+                                <div class="cover-overlay"></div>
+                            </div>
+                            
+                            <div class="playlist-text">
+                                <h3>생각 정리 플레이리스트</h3>
+                                <p>집중력을 높이는 명상 음악</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="playlist-item">
-                        <div class="album-cover-placeholder"></div>
-                        <div class="playlist-text">
-                            <h3>코딩할 때 음악</h3>
-                            <p>몰입도를 높이는 백색 소음</p>
+                        <div class="playlist-item">
+                            <div class="album-cover-placeholder"></div>
+                            <div class="playlist-text">
+                                <h3>코딩할 때 음악</h3>
+                                <p>몰입도를 높이는 백색 소음</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="playlist-item">
-                        <div class="album-cover-placeholder"></div>
-                        <div class="playlist-text">
-                            <h3>집중력 강화</h3>
-                            <p>산만함을 없애는 잔잔한 곡</p>
+                        <div class="playlist-item">
+                            <div class="album-cover-placeholder"></div>
+                            <div class="playlist-text">
+                                <h3>집중력 강화</h3>
+                                <p>산만함을 없애는 잔잔한 곡</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="playlist-item">
-                        <div class="album-cover-placeholder"></div>
-                        <div class="playlist-text">
-                            <h3>휴식 시간</h3>
-                            <p>재충전을 위한 편안한 곡</p>
+                        <div class="playlist-item">
+                            <div class="album-cover-placeholder"></div>
+                            <div class="playlist-text">
+                                <h3>휴식 시간</h3>
+                                <p>재충전을 위한 편안한 곡</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="playlist-item">
-                        <div class="album-cover-placeholder"></div>
-                        <div class="playlist-text">
-                            <h3>감성 폭발 시티팝</h3>
-                            <p>경쾌하고 중독성 있는 멜로디</p>
+                        <div class="playlist-item">
+                            <div class="album-cover-placeholder"></div>
+                            <div class="playlist-text">
+                                <h3>감성 폭발 시티팝</h3>
+                                <p>경쾌하고 중독성 있는 멜로디</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </main>
+            </main>
+        </div>
     </div>
 
     <footer>
         <p>&copy; 2025 Music for Work. All rights reserved.</p>
     </footer>
     <script>
-       const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyRqIwG5kFRLfdXD9TndJFolb4qvkopgDgsJrM_8jp3Z2r-yWxMfY8DaqlPIHe55q6ajA/exec";
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyRqIwG5kFRLfdXD9TndJFolb4qvkopgDgsJrM_8jp3Z2r-yWxMfY8DaqlPIHe55q6ajA/exec";
+        
+        // 사용 가능한 작업 스타일 태그 목록
+        const availableTags = [
+            '밤샘 작업 선호', '아침에 작업을 선호', '집중력 필요', '창의적 작업',
+            '휴식이 중요', '반복 작업', '조용한 환경 선호', '활기찬 분위기 선호'
+        ];
+
+        // 초기 선택된 태그 값 (input hidden에서 가져옴)
+        let selectedTags = new Set(
+            document.getElementById('workStyle').value.split(',').map(tag => tag.trim()).filter(tag => tag)
+        );
+
+
+        // 태그 버튼을 렌더링하고 클릭 이벤트를 설정하는 함수
+        function setupWorkStyleTags() {
+            const tagsContainer = document.getElementById('workStyleHashtags');
+            const workStyleInput = document.getElementById('workStyle');
+            tagsContainer.innerHTML = ''; // 초기화
+
+            availableTags.forEach(tag => {
+                const button = document.createElement('span');
+                button.textContent = `#${tag}`;
+                button.classList.add('hashtag-button');
+                button.setAttribute('data-tag', tag);
+
+                // 현재 선택된 태그인지 확인하여 클래스 추가
+                if (selectedTags.has(tag)) {
+                    button.classList.add('selected');
+                }
+
+                button.addEventListener('click', () => {
+                    if (selectedTags.has(tag)) {
+                        selectedTags.delete(tag);
+                        button.classList.remove('selected');
+                    } else {
+                        selectedTags.add(tag);
+                        button.classList.add('selected');
+                    }
+                    
+                    // 선택된 태그 목록을 숨겨진 input 필드에 업데이트 (쉼표로 구분)
+                    workStyleInput.value = Array.from(selectedTags).join(',');
+                });
+
+                tagsContainer.appendChild(button);
+            });
+            
+            // 페이지 로드 시 hidden input 값 초기 설정
+            workStyleInput.value = Array.from(selectedTags).join(',');
+        }
 
         document.getElementById('userInfoForm').addEventListener('submit', function(event) {
             event.preventDefault(); // 기본 폼 제출 방지
@@ -217,21 +629,20 @@
                 body: new URLSearchParams(data) 
             })
             .then(() => {
-                // no-cors 모드에서는 실제 응답을 읽지는 못하지만, 전송 성공으로 간주
                 alert("✅ 설정이 성공적으로 저장되었습니다!");
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert("❌ 설정 저장 중 오류가 발생했습니다. 콘솔을 확인하세요.");
+                alert("❌ 설정 저장 중 오류가 발생했습니다. 다시 시도해주세요.");
             })
             .finally(() => {
                 saveButton.textContent = '설정 저장';
                 saveButton.disabled = false;
             });
         });
+
+        // 페이지 로드 시 태그 버튼 설정
+        document.addEventListener('DOMContentLoaded', setupWorkStyleTags);
     </script>
 </body>
-
 </html>
-
-
